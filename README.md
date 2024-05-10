@@ -7,7 +7,7 @@ This Python script provides several functions to manipulate PDF files. You can c
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your_username/pdf-utility.git
+    git clone https://github.com/deni000/pdf-convert-utility.git
     cd pdf-utility
     ```
 
