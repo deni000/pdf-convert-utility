@@ -1,5 +1,6 @@
 import os
-from PyPDF2 import PdfReader, PdfWriter, PdfMerger  # Updated imports
+import platform
+from PyPDF2 import PdfReader, PdfWriter, PdfMerger
 import pdfplumber
 from pdf2docx import Converter
 from pptx import Presentation
@@ -14,15 +15,13 @@ def pdf_to_word(pdf_path, docx_path):
 
 def pdf_to_powerpoint(pdf_path, pptx_path):
     prs = Presentation()
-
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
-            image_path = "temp_image.png"  # Temporary image path
-            page.to_image(resolution=300).save(image_path)  # Save the image with 300 DPI
+            image_path = "temp_image.png"
+            page.to_image(resolution=300).save(image_path)
             slide = prs.slides.add_slide(prs.slide_layouts[5])
             slide.shapes.add_picture(image_path, 0, 0, width=Inches(10), height=Inches(7.5))
-            os.remove(image_path)  # Remove the temporary image file
-
+            os.remove(image_path)
     prs.save(pptx_path)
     print("PDF converted to PowerPoint successfully. Result saved as", pptx_path)
 
@@ -37,12 +36,25 @@ def merge_pdf(pdf_files, output_path):
 
 def shrink_pdf(input_pdf, output_pdf):
     with pdfplumber.open(input_pdf) as pdf:
-        pdf.pages[0].to_image()  # This forces image decompression
+        pdf.pages[0].to_image()  # Forces image decompression
 
-    os.system(
-        f"gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook "
-        f"-dNOPAUSE -dQUIET -dBATCH -sOutputFile='{output_pdf}' '{input_pdf}'"
-    )
+    # Ensure output path ends with .pdf
+    if not output_pdf.lower().endswith('.pdf'):
+        output_pdf += '.pdf'
+
+    # Use Ghostscript to compress PDF, suppressing warnings
+    if platform.system() == "Windows":
+        cmd = (
+            f"gswin64c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook "
+            f"-dNOPAUSE -dQUIET -dBATCH -sOutputFile=\"{output_pdf}\" \"{input_pdf}\" > nul 2>&1"
+        )
+    else:
+        cmd = (
+            f"gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook "
+            f"-dNOPAUSE -dQUIET -dBATCH -sOutputFile='{output_pdf}' '{input_pdf}' 2>/dev/null"
+        )
+
+    os.system(cmd)
     print("PDF compressed successfully. Result saved as", output_pdf)
 
 def split_pdf(input_pdf, output_dir):
@@ -87,6 +99,8 @@ def main():
                 break
             pdf_files_to_merge.append(pdf_path)
         output_path = input("Enter the output path for the merged PDF: ").strip()
+        if not output_path.lower().endswith('.pdf'):
+            output_path += '.pdf'
         merge_pdf(pdf_files_to_merge, output_path)
 
     elif choice == "4":
