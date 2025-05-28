@@ -1,4 +1,4 @@
-pdf2docx==0.5.8
-pdfplumber==0.11.0
-PyPDF2==2.12.1
-python-pptx==0.6.18
+pdf2docx
+pdfplumber
+PyPDF2
+python-pptx
