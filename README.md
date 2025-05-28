@@ -10,11 +10,20 @@ This Python script provides several functions to manipulate PDF files. You can c
     git clone https://github.com/deni000/pdf-convert-utility.git
     cd pdf-utility
     ```
+2. Create Python vertual environment for this tool:
 
-2. Install the required Python libraries:
+    ```bash
+    python3 -m venv pdf
+    source pdf/bin/activate
+    ```
+3. Install the required Python libraries:
 
     ```bash
     pip install -r requirements.txt
+
+    or
+
+    pip install pdf2docx pdfplumber PyPDF2 python-pptx
     ```
 
 ## Usage
