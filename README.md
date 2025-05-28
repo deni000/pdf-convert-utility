@@ -15,6 +15,9 @@ This Python script provides several functions to manipulate PDF files. You can c
     ```bash
     python3 -m venv pdf
     source pdf/bin/activate
+
+    // Deactivate the environment
+    deactivate 
     ```
 3. Install the required Python libraries:
 
